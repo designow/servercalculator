@@ -4,128 +4,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
     <title>Document</title>
+    <script src="./js/script.js"></script>
 </head>
 
 <body>
     <style>
 
     </style>
+
     <div class="win-server">
-        <div class="win-server__processors">Введите количество физических процессоров в сервере <input type="text"
-                id="processors" value="1" maxlength="2"></div>
-        <div class="win-server__cores">Введите количество физических ядер (на процессор) <input type="text" id="cores"
-                value="1" maxlength="2">
-        </div>
-        <div class="win-server__total">Windows Server 2019 необходимо лицензировать <span id="total-cores">1</span>
-        </div>
-        <div class="win-server__total">
-            <h2>Рекомендуемый основной SKU</h2>
-            <ul>
-                <li>Windows Server® 2019 Standard or Datacenter (16 ядер): <span id="license-16">1</span></li>
-                <li>Windows Server® 2019 Standard or Datacenter (24 ядра): <span id="license-24">0</span></li>
-            </ul>
-            <h2>Рекомендуемый дополнительный SKU</h2>
-            <p>Дополнительно необходимо лицензировать (ядер) - <span id="ext-cores">0</span></p>
-            <ul class="">
-                <li>Windows Server® 2019 Standard or Datacenter Additional License (16 core): <span
-                        id="ext-license-0">0</span></li>
-                <li>Windows Server® 2019 Standard or Datacenter Additional License (4 core): <span
-                        id="ext-license-1">0</span></li>
-                <li>Windows Server® 2019 Standard or Datacenter Additional License (2 core): <span
-                        id="ext-license-2">0</span></li>
-            </ul>
-        </div>
+        <form>
+            <div class="win-server__item">
+                <span class="win-server__label">Введите количество физических процессоров в сервере</span>
+                <input type="text" id="processors" value="1" maxlength="2" class="win-server__text"></div>
+            <div class="win-server__item">
+                <span class="win-server__label">Введите количество физических ядер (на процессор)</span>
+                <input type="text" id="cores" value="1" maxlength="2" class="win-server__text">
+            </div>
+            <div class="win-server__item"><span class="win-server__label">Windows Server 2019 необходимо
+                    лицензировать</span>
+                <span id="total-cores" class="win-server__number win-server__number--green">1</span>
+            </div>
+            <div class="win-server__extra">
+                <h2>Рекомендуемый основной SKU</h2>
+                <div class="win-server__item"><span class="win-server__label">Windows Server® 2019 Standard or
+                        Datacenter
+                        (16 ядер):</span> <span id="license-16"
+                        class="win-server__number win-server__number--green">1</span></div>
+                <div class="win-server__item"><span class="win-server__label">Windows Server® 2019 Standard or
+                        Datacenter
+                        (24 ядра):</span> <span id="license-24" class="win-server__number">0</span></div>
+                <h2>Рекомендуемый дополнительный SKU</h2>
+                <div class="win-server__item"><span class="win-server__label">Дополнительно необходимо лицензировать
+                        (ядер)</span> <span id="ext-cores" class="win-server__number">0</span></div>
+                <div class="win-server__item">
+                    <span class="win-server__label">Windows Server® 2019 Standard or Datacenter Additional License (16
+                        core)</span> <span id="ext-license-0" class="win-server__number">0</span></div>
+                <div class="win-server__item"><span class="win-server__label">Windows Server® 2019 Standard or
+                        Datacenter
+                        Additional License (4 core)</span> <span id="ext-license-1" class="win-server__number">0</span>
+                </div>
+                <div class="win-server__item"><span class="win-server__label">Windows Server® 2019 Standard or
+                        Datacenter
+                        Additional License (2 core)</span> <span id="ext-license-2" class="win-server__number">0</span>
+                </div>
+                </ul>
+            </div>
+        </form>
     </div>
-    <script>
-        'use strict';
-        (function () {
-            var getSelector = function (name) {
-                return document.querySelector(name);
-            }
 
-            var LICENSE_TYPE = [16, 24];
-            var EXT_LICENSE_TYPE = [16, 4, 2];
-            var EXT_LICENSE_COUNT = [0, 0, 0];
-            var processors = getSelector('#processors');
-            var cores = getSelector('#cores');
-            var totalCores = getSelector('#total-cores');
-            var license16 = getSelector('#license-16');
-            var license24 = getSelector('#license-24');
-            var extCores = getSelector('#ext-cores');
-            var extlicense16 = getSelector('#ext-license-16');
-            var extCoresCount = 0;
-            //Расчет количества ядер в процессах
-            var totalCoresCalculator = function (processors, cores) {
-                return processors * cores;
-            }
-            //Выбор типа основной лицензии
-            var licenseType = function (cores, type1, type2) {
-                var licenseType = 0;
-                extCores.textContent = 0;
-                if (cores <= LICENSE_TYPE[0]) {
-                    type1.textContent = 1;
-                    type2.textContent = 0;
-                    if (cores - LICENSE_TYPE[0] > 0) {
-                        licenseType = LICENSE_TYPE[0];
-                    }
-                } else {
-                    type1.textContent = 0;
-                    type2.textContent = 1;
-                    if (cores - LICENSE_TYPE[1] > 0) {
-                        licenseType = LICENSE_TYPE[1];
-                    }
-                }
-                if (licenseType) {
-                    return cores - licenseType;
-                }
-
-            }
-
-            var extLicenseCount = function (cores, count) {
-                var licenseCount = 0;
-                while (cores >= 0) {
-                    cores = cores - count;
-                    if (cores >= 0) {
-                        licenseCount++;
-                    }
-                }
-                return licenseCount;
-            }
-
-            var extLicense = function () {
-                var licenseAccumulator = 0;
-                for (var i = 0; i < EXT_LICENSE_TYPE.length; i++) {
-                    extCoresCount = extCoresCount - licenseAccumulator;
-                    EXT_LICENSE_COUNT[i] = extLicenseCount(extCoresCount, EXT_LICENSE_TYPE[i]);
-                    getSelector('#ext-license-' +
-                        i).textContent = EXT_LICENSE_COUNT[i];
-                    licenseAccumulator = licenseAccumulator + (EXT_LICENSE_COUNT[i] *
-                        EXT_LICENSE_TYPE[i]);
-                }
-            }
-
-            processors.addEventListener('input', function () {
-                totalCores.textContent = totalCoresCalculator(processors.value, cores.value);
-                extCoresCount = licenseType(totalCores.textContent, license16, license24);
-                if (extCoresCount) {
-                    extCores.textContent = extCoresCount;
-                }
-                extLicense();
-            });
-
-            cores.addEventListener('input', function () {
-                totalCores.textContent = totalCoresCalculator(processors.value, cores.value);
-                extCoresCount = licenseType(totalCores.textContent, license16, license24);
-                if (extCoresCount) {
-                    extCores.textContent = extCoresCount;
-                }
-                extLicense();
-            });
-
-
-        })();
-    </script>
 </body>
 
 </html>
